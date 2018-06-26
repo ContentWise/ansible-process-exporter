@@ -1,0 +1,27 @@
+---
+process_exporter_install_dir: "/opt/prometheus-exporters/process-exporter"
+process_exporter_version: "0.2.11"
+process_exporter_name: "process-exporter_{{ process_exporter_version }}_linux_amd64"
+process_exporter_url: "https://github.com/ncabatoff/process-exporter/releases/download/v{{ process_exporter_version }}/{{ process_exporter_name }}.tar.gz"
+process_exporter_binary: "{{ process_exporter_install_dir }}/{{ process_exporter_name }}/process-exporter"
+process_exporter_symlink: "{{ process_exporter_install_dir }}/process_exporter"
+
+process_exporter_listen_address: ":9256"
+process_exporter_config_dir: "{{ process_exporter_install_dir }}/config"
+process_exporter_config:
+  process_names:
+    - comm: []
+    - exe: []
+    - cmdline: []
+# process_exporter_config:
+#   process_names:
+#     - comm: 
+#       - chromium-browse
+#       - bash
+#       - prometheus
+#       - gvim
+#     - exe: 
+#       - /sbin/upstart
+#       cmdline: 
+#       - --user
+#       name: upstart:-use

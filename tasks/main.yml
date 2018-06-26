@@ -1,0 +1,48 @@
+---
+- name: ensure Prometheus exporters directory exist
+  file:
+    path: "{{ process_exporter_install_dir }}"
+    state: directory
+
+- name: create process-exporter folder
+  file:
+    path: "{{ process_exporter_install_dir }}/{{ process_exporter_name }}"
+    state: directory
+
+- name: unarchive Process Exporter
+  unarchive:
+    remote_src: yes
+    dest: "{{ process_exporter_install_dir }}/{{ process_exporter_name }}"
+    src: "{{ process_exporter_url }}"
+
+- name: create symlink to the current release
+  file:
+    src: "{{ process_exporter_binary }}"
+    path: "{{ process_exporter_symlink }}"
+    state: link
+  notify: restart process exporter
+
+- name: ensure configuration directory exist
+  file:
+    path: "{{ process_exporter_config_dir }}"
+    state: directory
+
+- name: create Processs Exporter configuration
+  template:
+    src: process_exporter.yml.j2
+    dest: "{{ process_exporter_config_dir }}/process_exporter.yml"
+  notify: restart process exporter
+
+- name: create systemd script
+  template:
+    src: process_exporter.service.j2
+    dest: /etc/systemd/system/process-exporter.service
+  notify: restart process exporter
+
+- meta: flush_handlers
+
+- name: make sure Process Exporter is started
+  service:
+    name: process-exporter
+    state: started
+    enabled: yes

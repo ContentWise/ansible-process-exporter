@@ -1,0 +1,14 @@
+[Unit]
+Description=Process Exporter for Prometheus
+
+[Service]
+Type=simple
+ExecStart={{ process_exporter_symlink }} \
+            --web.listen-address={{ process_exporter_listen_address }} \
+            --config.path {{ process_exporter_config_dir }}/process_exporter.yml
+
+KillMode=process
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
